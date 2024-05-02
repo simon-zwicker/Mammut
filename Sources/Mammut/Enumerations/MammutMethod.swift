@@ -5,7 +5,7 @@
 //  Created by Simon Zwicker on 02.05.24.
 //
 
-public enum Method: String {
+public enum MammutMethod: String {
     case get = "GET"
     case put = "PUT"
     case post = "POST"

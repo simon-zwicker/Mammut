@@ -7,6 +7,6 @@
 
 extension String {
     var curlMethod: Bool {
-        self != Method.get.rawValue && self != Method.head.rawValue
+        self != MammutMethod.get.rawValue && self != MammutMethod.head.rawValue
     }
 }

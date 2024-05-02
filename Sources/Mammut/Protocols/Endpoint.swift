@@ -9,8 +9,8 @@ import Foundation
 
 public protocol Endpoint {
     var path: String { get }
-    var method: Method { get }
-    var headers: [Header] { get }
+    var method: MammutMethod { get }
+    var headers: [MammutHeader] { get }
     var parameters: [String: Any] { get }
     var encoding: Encoding { get }
 }

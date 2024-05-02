@@ -1,11 +1,11 @@
 //
-//  Header.swift
+//  MammutHeader.swift
 //
 //
 //  Created by Simon Zwicker on 02.05.24.
 //
 
-public enum Header: Equatable {
+public enum MammutHeader: Equatable {
     case cacheControl(String)
     case connection(String)
     case authorization(Authorization)
