@@ -24,4 +24,8 @@ struct MammutUtils {
         }
         return string.data(using: .utf8)
     }
+
+    static func dataEncoded(_ data: MammutData) -> Data {
+        return .init()
+    }
 }
