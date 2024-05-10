@@ -48,11 +48,12 @@ public enum Authorization: Equatable {
 public enum Content: Equatable {
     case length(Int)
     case type(String)
+    case formData(String)
 
     var key: String {
         switch self {
         case .length: "Content-Length"
-        case .type: "Content-Type"
+        case .type, .formData: "Content-Type"
         }
     }
 
@@ -60,6 +61,7 @@ public enum Content: Equatable {
         switch self {
         case .length(let int): "\(int)"
         case .type(let string): string
+        case .formData(let string): "multipart/form-data; boundary=\(string)"
         }
     }
 }
