@@ -8,4 +8,11 @@
 public enum DataType {
     case jpeg
     case pdf
+
+    var contentType: String {
+        switch self {
+        case .jpeg: "image/jpeg"
+        case .pdf: "application/pdf"
+        }
+    }
 }

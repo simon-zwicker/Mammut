@@ -25,7 +25,24 @@ struct MammutUtils {
         return string.data(using: .utf8)
     }
 
-    static func dataEncoded(_ data: MammutData) -> Data {
-        return .init()
+    static func dataEncoded(_ data: MammutData?) -> Data? {
+        guard let data else { return nil }
+        var complete: Data = .init()
+
+        if let data = DataEncoding.contentDisposition(params: data.parameter, filename: data.fileName).data {
+            complete.append(data)
+        }
+
+        if let data = DataEncoding.contentType(data.type.contentType).data {
+            complete.append(data)
+        }
+
+        complete.append(data.data)
+
+        if let data = DataEncoding.boundary(data.boundary).data {
+            complete = data + complete + data
+        }
+
+        return complete
     }
 }

@@ -9,4 +9,5 @@ public enum Encoding {
     case url
     case json
     case jsonToUrl
+    case data
 }

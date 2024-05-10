@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  
+//  MammutData.swift
+//
 //
 //  Created by Simon Zwicker on 03.05.24.
 //
@@ -14,7 +14,13 @@ public struct MammutData {
     let parameter: String
     let boundary: String
 
-    public init(fileName: String, type: DataType, data: Data, parameter: String, boundary: String) {
+    public init(
+        fileName: String,
+        type: DataType,
+        data: Data,
+        parameter: String,
+        boundary: String
+    ) {
         self.fileName = fileName
         self.type = type
         self.data = data

@@ -17,6 +17,7 @@ final class MammutService: NSObject {
     private var timeout: TimeInterval?
     private var request: URLRequest?
     private var endpoint: Endpoint?
+    private var data: MammutData?
 
     // MARK: - Service Configuration
     func configuration(_ components: URLComponents, _ timeout: TimeInterval?) {
@@ -24,8 +25,9 @@ final class MammutService: NSObject {
         self.components = components
     }
 
-    func request<T: Codable>(_ endpoint: Endpoint, error: Codable.Type) async -> Result<T, Error> {
+    func request<T: Codable>(_ endpoint: Endpoint, error: Codable.Type, data: MammutData? = nil) async -> Result<T, Error> {
         self.endpoint = endpoint
+        self.data = data
         guard let req = try? await createReq() else { return .failure(MammutError.invalidUrl) }
         let session: URLSession = .init(configuration: .default, delegate: self, delegateQueue: .main)
 
@@ -84,13 +86,16 @@ final class MammutService: NSObject {
     }
 
     private func requestBody() {
-        guard let endpoint else { return }
+        guard let endpoint, endpoint.parameters.isNotEmpty else { return }
         switch endpoint.encoding {
         case .json:
-            request?.httpBody = endpoint.parameters.isNotEmpty ? MammutUtils.jsonEncoded(endpoint.parameters): nil
+            request?.httpBody = MammutUtils.jsonEncoded(endpoint.parameters)
 
         case .jsonToUrl:
-            request?.httpBody = endpoint.parameters.isNotEmpty ? MammutUtils.jsonToUrlEncoded(endpoint.parameters): nil
+            request?.httpBody = MammutUtils.jsonToUrlEncoded(endpoint.parameters)
+
+        case .data:
+            request?.httpBody = MammutUtils.dataEncoded(data)
 
         default:
             return

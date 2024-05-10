@@ -20,11 +20,19 @@ public class Mammut {
     }
 
     // MARK: - Initialization
-    public init(components: URLComponents, timout: TimeInterval? = nil, loglevel: Loglevel = .none) {
+    public init(
+        components: URLComponents,
+        timout: TimeInterval? = nil,
+        loglevel: Loglevel = .none
+    ) {
         self.loglevel = loglevel
     }
 
-    public func request<T: Codable>(_ endpoint: Endpoint, error: Codable.Type) async -> Result<T, Error> {
-        await MammutService.main.request(endpoint, error: error)
+    public func request<T: Codable>(
+        _ endpoint: Endpoint,
+        error: Codable.Type,
+        data: MammutData? = nil
+    ) async -> Result<T, Error> {
+        await MammutService.main.request(endpoint, error: error, data: data)
     }
 }
