@@ -105,13 +105,17 @@ final class MammutService: NSObject {
 
 //MARK: - URLSessionDelegate
 extension MammutService: URLSessionDelegate {
-    func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+    func urlSession(
+        _ session: URLSession,
+        didReceive challenge: URLAuthenticationChallenge,
+        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+    ) {
         if challenge.protectionSpace.serverTrust == nil {
             completionHandler(.useCredential, nil)
+        } else {
+            guard Mammut.insecureConnection, let trust: SecTrust = challenge.protectionSpace.serverTrust else { return }
+            let credentials: URLCredential = .init(trust: trust)
+            completionHandler(.useCredential, credentials)
         }
-
-        guard Mammut.insecureConnection, let trust: SecTrust = challenge.protectionSpace.serverTrust else { return }
-        let credentials: URLCredential = .init(trust: trust)
-        completionHandler(.useCredential, credentials)
     }
 }
