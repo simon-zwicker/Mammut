@@ -29,10 +29,10 @@ final class MammutService: NSObject {
         self.endpoint = endpoint
         self.data = data
         guard let req = try? await createReq() else { return .failure(MammutError.invalidUrl) }
-        let session: URLSession = .init(configuration: .default, delegate: self, delegateQueue: .main)
+        let session: URLSession = .init(configuration: .default)
 
         do {
-            let (data, response) = try await session.data(for: req, delegate: nil)
+            let (data, response) = try await session.data(for: req)
             guard let response = response as? HTTPURLResponse else { return .failure(MammutError.noResponse) }
 
             Mammut.mammutLog.log(response, data: data)
@@ -99,23 +99,6 @@ final class MammutService: NSObject {
 
         default:
             return
-        }
-    }
-}
-
-//MARK: - URLSessionDelegate
-extension MammutService: URLSessionDelegate {
-    func urlSession(
-        _ session: URLSession,
-        didReceive challenge: URLAuthenticationChallenge,
-        completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
-    ) {
-        if challenge.protectionSpace.serverTrust == nil {
-            completionHandler(.useCredential, nil)
-        } else {
-            guard Mammut.insecureConnection, let trust: SecTrust = challenge.protectionSpace.serverTrust else { return }
-            let credentials: URLCredential = .init(trust: trust)
-            completionHandler(.useCredential, credentials)
         }
     }
 }

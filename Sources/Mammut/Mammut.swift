@@ -7,16 +7,10 @@ public class Mammut {
 
     // MARK: - Properties
     static let mammutLog: MammutLog = .init()
-    static var insecureConnection: Bool = false
 
     public var loglevel: Loglevel {
         get { Self.mammutLog.level }
         set { Self.mammutLog.level = newValue }
-    }
-
-    public var insecure: Bool {
-        get { Self.insecureConnection }
-        set { Self.insecureConnection = newValue }
     }
 
     // MARK: - Initialization
