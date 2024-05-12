@@ -22,10 +22,11 @@ public class Mammut {
     // MARK: - Initialization
     public init(
         components: URLComponents,
-        timout: TimeInterval? = nil,
+        timeout: TimeInterval? = nil,
         loglevel: Loglevel = .none
     ) {
         self.loglevel = loglevel
+        MammutService.main.configuration(components, timeout)
     }
 
     public func request<T: Codable>(
