@@ -11,6 +11,7 @@ public enum MammutHeader: Equatable {
     case authorization(Authorization)
     case content(Content)
     case accept(Accept)
+    case userAgent(String)
 
     var key: String {
         switch self {
@@ -19,6 +20,7 @@ public enum MammutHeader: Equatable {
         case .authorization: "Authorization"
         case .content(let content): content.key
         case .accept(let accept): accept.key
+        case .userAgent: "User-Agent"
         }
     }
 
@@ -29,6 +31,7 @@ public enum MammutHeader: Equatable {
         case .authorization(let authorization): authorization.value
         case .content(let content): content.value
         case .accept(let accept): accept.value
+        case .userAgent(let string): string
         }
     }
 }
