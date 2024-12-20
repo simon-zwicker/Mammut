@@ -12,5 +12,6 @@ public protocol Endpoint {
     var method: MammutMethod { get }
     var headers: [MammutHeader] { get }
     var parameters: [String: Any] { get }
+	var parametersUrl: [String: Any] { get }
     var encoding: Encoding { get }
 }

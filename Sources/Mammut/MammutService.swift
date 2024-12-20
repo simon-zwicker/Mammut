@@ -76,8 +76,10 @@ final class MammutService: NSObject {
     private func endpointUrl() async throws -> URL {
         guard var components, let endpoint else { throw MammutError.invalidUrl }
 
-        if endpoint.parameters.isNotEmpty, endpoint.encoding == .url {
-            components.queryItems = MammutUtils.urlEncoded(endpoint.parameters)
+		if endpoint.parameters.isNotEmpty, endpoint.encoding == .url || endpoint.encoding == .urlAndBody {
+			components.queryItems = MammutUtils.urlEncoded(
+				endpoint.encoding == .url ? endpoint.parameters: endpoint.parametersUrl
+			)
         }
         components.path += endpoint.path
 
@@ -88,7 +90,7 @@ final class MammutService: NSObject {
     private func requestBody() {
         guard let endpoint, endpoint.parameters.isNotEmpty else { return }
         switch endpoint.encoding {
-        case .json:
+		case .json, .urlAndBody:
             request?.httpBody = MammutUtils.jsonEncoded(endpoint.parameters)
 
         case .jsonToUrl:
@@ -96,6 +98,7 @@ final class MammutService: NSObject {
 
         case .data:
             request?.httpBody = MammutUtils.dataEncoded(data)
+
 
         default:
             return
