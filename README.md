@@ -165,7 +165,7 @@ extension ExampleAPI: Endpoint {
 ```
 
 ### Call
-```
+```swift
 do {
 	self.fact = try await Network.request(Fact.self, endpoint: ExampleAPI.randomFact(language: "en"))
 } catch let error as LocalizedError {
