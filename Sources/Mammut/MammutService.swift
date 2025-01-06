@@ -44,15 +44,14 @@ final class MammutService: NSObject {
 
             case 401:
                 guard let decoded = try? data.decode(error) else { return .failure(.decode) }
-                return .failure(MammutError.unauthorized(decoded))
+                return .failure(.unauthorized(decoded))
 
             case 404:
-                guard let decoded = try? data.decode(error) else { return .failure(.decode) }
-                return .failure(MammutError.noData(decoded))
+				return .failure(.invalidUrl)
 
             default:
                 guard let decoded = try? data.decode(error) else { return .failure(.decode) }
-                return .failure(MammutError.unexpectedStatusCode(decoded))
+                return .failure(.unexpectedStatusCode(decoded))
             }
         } catch {
             return .failure(.unknown)
