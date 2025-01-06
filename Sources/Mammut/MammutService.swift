@@ -25,7 +25,7 @@ final class MammutService: NSObject {
         self.components = components
     }
 
-    func request<T: Codable>(_ endpoint: Endpoint, error: Codable.Type, data: MammutData? = nil) async -> Result<T, Error> {
+    func request<T: Codable>(_ endpoint: Endpoint, error: Codable.Type, data: MammutData? = nil) async -> Result<T, MammutError> {
         self.endpoint = endpoint
         self.data = data
         guard let req = try? await createReq() else { return .failure(MammutError.invalidUrl) }
@@ -33,48 +33,48 @@ final class MammutService: NSObject {
 
         do {
             let (data, response) = try await session.data(for: req)
-            guard let response = response as? HTTPURLResponse else { return .failure(MammutError.noResponse) }
+            guard let response = response as? HTTPURLResponse else { return .failure(.noResponse) }
 
             Mammut.mammutLog.log(response, data: data)
 
             switch response.statusCode {
             case 200...299:
-                guard let decoded = try? data.decode(T.self) else { return .failure(MammutError.decode) }
+                guard let decoded = try? data.decode(T.self) else { return .failure(.decode) }
                 return .success(decoded)
 
             case 401:
-                guard let decoded = try? data.decode(error) else { return .failure(MammutError.decode) }
+                guard let decoded = try? data.decode(error) else { return .failure(.decode) }
                 return .failure(MammutError.unauthorized(decoded))
 
             case 404:
-                guard let decoded = try? data.decode(error) else { return .failure(MammutError.decode) }
+                guard let decoded = try? data.decode(error) else { return .failure(.decode) }
                 return .failure(MammutError.noData(decoded))
 
             default:
-                guard let decoded = try? data.decode(error) else { return .failure(MammutError.decode) }
+                guard let decoded = try? data.decode(error) else { return .failure(.decode) }
                 return .failure(MammutError.unexpectedStatusCode(decoded))
             }
         } catch {
-            return .failure(MammutError.unknown)
+            return .failure(.unknown)
         }
     }
 
     // MARK: - Helper Functions
-    private func createReq() async throws -> URLRequest {
-        guard let endpoint, let baseUrl = try? await endpointUrl() else { throw MammutError.invalidUrl }
+    private func createReq() async throws(MammutError) -> URLRequest {
+        guard let endpoint, let baseUrl = try? await endpointUrl() else { throw .invalidUrl }
         request = .init(url: baseUrl)
 
         requestBody()
         request?.httpMethod = endpoint.method.rawValue
         endpoint.headers.forEach({ request?.setValue($0.value, forHTTPHeaderField: $0.key) })
 
-        guard let request else { throw MammutError.unknown }
+        guard let request else { throw .unknown }
         Mammut.mammutLog.log(request)
         return request
     }
 
-    private func endpointUrl() async throws -> URL {
-        guard var components, let endpoint else { throw MammutError.invalidUrl }
+    private func endpointUrl() async throws(MammutError) -> URL {
+        guard var components, let endpoint else { throw .invalidUrl }
 
 		if endpoint.parameters.isNotEmpty, endpoint.encoding == .url || endpoint.encoding == .urlAndBody {
 			components.queryItems = MammutUtils.urlEncoded(
@@ -83,7 +83,7 @@ final class MammutService: NSObject {
         }
         components.path += endpoint.path
 
-        guard let baseUrl = components.url else { throw MammutError.invalidUrl }
+        guard let baseUrl = components.url else { throw .invalidUrl }
         return baseUrl
     }
 

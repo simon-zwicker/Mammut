@@ -27,7 +27,7 @@ public class Mammut {
         _ endpoint: Endpoint,
         error: Codable.Type,
         data: MammutData? = nil
-    ) async -> Result<T, Error> {
+	) async -> Result<T, MammutError> {
         await MammutService.main.request(endpoint, error: error, data: data)
     }
 }
