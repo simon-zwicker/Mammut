@@ -82,7 +82,7 @@ final class MammutService: NSObject {
         components.path += endpoint.path
 
 		if endpoint.customParameters.isNotEmpty {
-			components.path += MammutUtils.urlCustomEncoded(endpoint.customParameters)
+			components.percentEncodedPath += MammutUtils.urlCustomEncoded(endpoint.customParameters)
 		}
 
         guard let baseUrl = components.url else { throw .invalidUrl }
