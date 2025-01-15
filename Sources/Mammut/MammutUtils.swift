@@ -12,6 +12,10 @@ struct MammutUtils {
         params.compactMap({ URLQueryItem(name: $0.key, value: $0.value as? String) })
     }
 
+	static func urlCustomEncoded(_ params: [String: Any]) -> String {
+		params.compactMap({ "\($0.key)=\($0.value)" }).joined(separator: "&")
+	}
+
     static func jsonEncoded(_ object: [String: Any]) -> Data? {
         try? JSONSerialization.data(withJSONObject: object, options: [])
     }
