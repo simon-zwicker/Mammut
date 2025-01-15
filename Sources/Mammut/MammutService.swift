@@ -85,6 +85,7 @@ final class MammutService: NSObject {
 
 		if endpoint.customParameters.isNotEmpty {
 			var baseUrlModify = baseUrl.absoluteString
+			baseUrlModify += endpoint.parameters.isEmpty ? "?": "&"
 			baseUrlModify += MammutUtils.urlCustomEncoded(endpoint.customParameters)
 			guard let modifiedURL = URL(string: baseUrlModify) else { throw .invalidUrl }
 			return modifiedURL
